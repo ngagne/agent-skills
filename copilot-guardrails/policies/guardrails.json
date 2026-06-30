@@ -1,0 +1,55 @@
+{
+  "$schema": "../schemas/guardrails.schema.json",
+  "version": 1,
+  "rules": [
+    {
+      "id": "workspace-only",
+      "description": "Prevent the agent from modifying files outside the current workspace.",
+      "effect": "deny",
+      "tools": [
+        "edit",
+        "create",
+        "delete"
+      ],
+      "outsideWorkspace": true
+    },
+    {
+      "id": "deny-home-dotfiles",
+      "description": "Prevent modification of shell and credential files",
+      "effect": "deny",
+      "tools": ["edit", "create"],
+      "paths": [
+        "~/.zshrc",
+        "~/.bashrc",
+        "~/.ssh/**",
+        "~/.aws/**"
+      ]
+    },
+    {
+      "id": "deny-system-paths",
+      "effect": "deny",
+      "tools": ["edit", "create"],
+      "paths": [
+        "/etc/**",
+        "/usr/**",
+        "/System/**"
+      ]
+    },
+    {
+      "id": "deny-sudo",
+      "effect": "deny",
+      "tool": "bash",
+      "commandPatterns": [
+        "^sudo\\s"
+      ]
+    },
+    {
+      "id": "deny-rm-rf",
+      "effect": "deny",
+      "tool": "bash",
+      "commandPatterns": [
+        "rm\\s+-rf"
+      ]
+    }
+  ]
+}
